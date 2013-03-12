@@ -1,0 +1,57 @@
+<html>
+<head>
+	<link rel="stylesheet" type="text/css" href="style.css">
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
+    <script type="text/javascript" src="http://localhost:8080/application.js"></script>
+	<script type="text/javascript">		
+		$(document).ready(function() { 	
+            console.log('yes')            
+            var jug = new Juggernaut;
+            jug.subscribe('settext', function (data) {
+                changeText(data);
+                });       
+            
+            //Set text in bootom with  value from redis
+                $.ajax({
+                        url: '/gettext/',
+                        method: 'POST',
+                        success: function (data){
+                            changeText(data)
+                        }
+                    })
+
+            //Submit text from text element by pressing Enter
+			$('#in').keyup(function(e){
+                		
+				if (e.which == 13) {				
+				$.ajax({
+                        url: '/settext/'+$('#in').val(),
+                        method: 'POST',
+                        success: function (data){
+                            changeText(data)
+                        }
+                    })
+			    }
+			});
+        
+        });
+
+            function changeText(data){
+                console.log("chtext")            
+                $('#out').html(data.result);
+                $('#in').val ('');
+            }			
+		
+
+	</script>
+	<title>Flask test!</title>
+</head>
+<body>
+	<h1 id="head">Testing Flask!</h1>
+	<br>
+	<input type="text" id="in">
+	<br><br>
+	<p id="out"></p>	
+
+</body>
+</html>
